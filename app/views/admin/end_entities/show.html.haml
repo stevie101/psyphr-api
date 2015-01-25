@@ -1,0 +1,43 @@
+%ul
+	%li= "UUID: #{@end_entity.uuid}"
+	%li= "Identifier: #{@end_entity.did}"
+	- if @end_entity.status == 0
+		%li Status: New
+	- elsif @end_entity.status == 1
+		%li Status: Pending
+	- elsif @end_entity.status == 2
+		%li Status: Enrolled
+	- elsif @end_entity.status == 4
+		%li Status: Revoked
+	
+- if @end_entity.cert	
+
+	%ul
+		%li= @end_entity.cert
+		%li
+			%br
+			= link_to 'revoke', ''
+		
+	
+- else	
+
+	= form_tag admin_end_entity_enrol_path(@end_entity) do 
+		.row
+			.large-4.columns
+				%label.right.inline
+					CSR
+			.large-4.columns
+				= text_area_tag 'csr'
+			.large-4.columns
+				&nbsp;
+		.row
+			.large-4.columns
+			.large-4.columns
+				= submit_tag 'enrol'
+			.large-4.columns
+				&nbsp;		
+
+
+	= link_to 'create a new certificate', new_admin_end_entity_certificate_path(@end_entity)	
+	
+= link_to 'back to end entities', admin_end_entities_path

@@ -1,0 +1,2 @@
+module Admin::EndEntitiesHelper
+end

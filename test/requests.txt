@@ -1,0 +1,8 @@
+curl -X POST -H "Content-Type: application/json" -d '{"app_id" : "08346872-8311-11e4-9353-70cd60fffe0e", "did" : "foobar1"}' http://localhost:3000/api/end_entities/
+
+curl -X GET -H "Content-Type: application/json" -d '{"app_id" : "08346872-8311-11e4-9353-70cd60fffe0e", "did" : "foobar1"}' http://127.0.0.1:3000/api/end_entities/80322ed4-8435-11e4-bc21-70cd60fffe0e/certificate
+
+
+curl -X GET http://192.168.1.86:8080/ejbca/publicweb/apply/scep/medhistory/pkiclient.exe?operation=GetCACaps&message=newCA
+
+curl -X GET http://192.168.1.86:8080/ejbca/publicweb/apply/scep/medhistory/pkiclient.exe?operation=GetNextCACert&message=newCA

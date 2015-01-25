@@ -1,0 +1,10 @@
+- if @apps and @apps.length > 0
+	%ul
+	- @apps.each do |app|
+		%li
+			= link_to app.name, admin_app_path(app)
+			= link_to 'destroy', admin_app_path(app), {method: :delete, remote: true}
+- else
+	%p No apps yet
+	
+= link_to 'Add a new app', new_admin_app_path

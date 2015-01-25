@@ -1,0 +1,17 @@
+require 'openssl'
+class Api::CaController < ApplicationController
+  
+  @@file = "#{Rails.root}/lib/assets/cert.der"
+  
+  # Sends the certificate in DER format
+  def cert
+    send_file @@file
+  end
+  
+  # Outputs the SHA1 fingerprint of the certificate
+  def fingerprint
+    digest = Digest::SHA1.file(@@file).hexdigest
+    render text: digest
+  end
+  
+end

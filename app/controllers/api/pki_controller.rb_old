@@ -1,0 +1,69 @@
+# encoding: utf-8
+require 'openssl'
+class Api::PkiController < ApplicationController
+  
+  def enrol
+    
+    # Responses: 
+    # reject
+    # pending
+    # success
+    
+    # Check the OU value matches that of a new device for this user account
+    # Check the OU value matches a device belonging to this user account awaiting enrolment
+    # If CSR is rejected respond with reject
+    # If user has set manual approval, respond with pending until CSR has been approved or rejected (client should keep polling)
+    # If user has set auto approval, generate certificate and respond with success
+    
+    message = URI.unescape(params[:message])
+    
+    # puts "message"
+    #puts message
+    # puts "end message"
+    
+    # temp = Tempfile.new('pkcs7')
+    # temp.binmode
+    # temp.write Base64.decode64(message)
+    # temp.close
+    
+    #p = OpenSSL::PKCS7.new
+    #puts p.to_s
+    
+    #puts Base64.decode64(message)
+    
+    #pkcs7 = OpenSSL::PKCS7.new str
+    
+    decoded_message = Base64.decode64(message)
+    
+    # puts decoded_message
+    
+    pkcs7 = OpenSSL::PKCS7.new(decoded_message)
+    
+    # pkcs7 = OpenSSL::PKCS7.read_smime(decoded_message) 
+    
+    puts pkcs7.type
+    
+    # puts "signers: #{pkcs7.signers}"
+    
+    puts "start data"
+    pkcs72 = OpenSSL::PKCS7.new pkcs7.to_der
+    puts pkcs72
+    puts "end data"
+    
+    puts pkcs7.to_pem
+    
+    #pkcs7.data = str2
+    
+    #pkcs7 = OpenSSL::PKCS7.read_smime(Base64.decode64(message))
+    #pkcs7 = OpenSSL::PKCS7.new Base64.decode64(message)
+    
+    
+    
+    # pkcs7.data = Base64.decode64(message)
+    
+    render text: 'reject'
+    
+  end
+  
+  
+end
