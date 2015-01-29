@@ -1,5 +1,3 @@
-set :repository, 'file:///Users/stevie/projects/sec/trunk'
-set :local_repository,  "file://."
 set :scm, :git
 set :deploy_via, :copy
 set :checkout, "export"
