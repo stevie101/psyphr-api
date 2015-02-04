@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   
+  get 'login', to: 'users#new', as: :login
+  
   namespace 'api' do
 
     resource :cert, controller: 'cert', only: [:show] do

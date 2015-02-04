@@ -20,13 +20,13 @@ role :app, "192.168.1.99"
 # role :app, "54.72.53.19"
 role :db, "192.168.1.99", :primary => true
 
-# namespace :deploy do
-#   task :symlink_shared do
-#     run "ln -s #{shared_path}/system/config/database.yml #{release_path}/config/database.yml"
-#   end
-# end
+namespace :deploy do
+  task :symlink_shared do
+    run "ln -s #{shared_path}/system/config/database.yml #{release_path}/config/database.yml"
+  end
+end
 
-# after 'deploy:update_code', 'deploy:symlink_shared'
+after 'deploy:update_code', 'deploy:symlink_shared'
 
 # set :application, "set your application name here"
 # set :repository,  "set your repository location here"
