@@ -1,21 +1,16 @@
 class CreateCertificates < ActiveRecord::Migration
   def change
     create_table :certificates do |t|
-      t.references :end_entity
-      
-      t.string :common_name             # CN attribute
-      t.string :organisational_unit     # OU attribute
-      t.string :organisation            # O attribute
-      t.string :locality                # L attribute
-      t.string :state                   # S attribute
-      t.string :country                 # C attribute
-      
-      t.datetime :valid_from
-      t.datetime :valid_to
+      t.references :certificatable, polymorphic: true, index: true
+      t.binary :certificate, limit: 64.kilobytes + 1
+      t.string :distinguished_name
+      t.datetime :expires_at, default: nil
+      t.datetime :revoked_at, default: nil
       t.string :serial_number
-      t.integer :state
-      
+      t.string :filename, default: 'unknown'
+      t.string :status, default: nil
       t.timestamps
     end
+
   end
 end

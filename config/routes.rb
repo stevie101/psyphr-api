@@ -1,8 +1,21 @@
 Rails.application.routes.draw do
   
-  get 'login', to: 'users#new', as: :login
+  get 'login', to: 'sessions#new', as: :login
+  get 'join', to: 'users#new', as: :join
+  get 'logout', to: 'sessions#destroy', as: :logout
+  
+  resources :sessions
+  resources :users
+  
+  get '.well-known/est/:uuid/cacerts', to: 'api/est#cacerts'
+  post '.well-known/est/:uuid/simpleenroll', to: 'api/est#simpleenroll'
+  post '.well-known/est/:uuid/simplereenroll', to: 'api/est#simplereenroll'
   
   namespace 'api' do
+
+    get '/cacerts', to: 'est#cacerts'
+    post '/simpleenroll', to: 'est#simpleenroll'
+    post '/simplereenroll', to: 'est#simplereenroll'
 
     resource :cert, controller: 'cert', only: [:show] do
 
@@ -26,10 +39,25 @@ Rails.application.routes.draw do
   
   namespace 'admin' do
     resources :users
-    resources :apps
+    resources :apps do
+      get 'client_key_pem'
+      get 'client_key_der'
+      get 'client_cert_pem'
+      get 'client_cert_der'
+      get 'client_pkcs12_der'
+      get 'ca_cert_pem'
+      get 'ca_cert_der'
+      post 'revoke_client_cert'
+      post 'revoke_ca_cert'
+      get 'download_crl'
+    end
     resources :end_entities do
       post :enrol
-      resources :certificates, controller: 'end_entities/certificates'
+      get 'cert_pem'
+      get 'cert_der'
+      resources :certificates, controller: 'end_entities/certificates' do
+        post 'revoke'
+      end
     end
   
   end

@@ -7,7 +7,8 @@ gem 'rails', '4.1.1'
 # gem 'sqlite3'
 gem 'mysql2'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+# gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails', '~> 5.0.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
@@ -28,18 +29,27 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'spring',        group: :development
 
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
 # gem 'unicorn'
 
 # Use Capistrano for deployment
-gem 'capistrano', '~> 2.1', group: :development
-gem 'rvm-capistrano', group: :development
+# gem 'capistrano', '~> 2.1', group: :development
+# gem 'rvm-capistrano', group: :development
+gem 'capistrano', '~> 3.3.0',  group: :development
+
+group :development do 
+  gem 'capistrano-rails', '~> 1.1', require: false 
+  gem 'capistrano-bundler', '~> 1.1', require: false 
+  gem 'capistrano-rvm', '~> 0.1', require: false
+end 
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'foundation-rails'
+gem 'foundation-icons-sass-rails'
 gem 'thin'
 gem 'haml'
 gem 'uuidtools'

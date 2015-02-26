@@ -1,0 +1,16 @@
+.row
+	.large-12.columns
+
+		#header
+			= link_to 'home', root_path
+			
+			- if current_user
+				= link_to 'apps', admin_apps_path
+				= link_to 'end entities', admin_end_entities_path
+
+			- if current_user
+				= link_to 'logout', logout_path
+			- else
+				= link_to 'login', login_path
+				= link_to 'join', join_path
+				

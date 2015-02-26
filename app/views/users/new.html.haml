@@ -1,1 +1,46 @@
-%p Login page
+.row
+	.large-12.columns
+
+		- model_class = @user.class
+		%h2 Join
+
+.row
+	.large-12.columns
+		
+		= form_for @user, :html => { :class => 'form-horizontal' } do |f|		
+	
+			.row
+				.large-6.columns
+					= f.label :firstname, :class => 'control-label'
+				.large-6.columns
+					= f.text_field :firstname, :class => 'text_field'
+
+			.row
+				.large-6.columns
+					= f.label :surname, :class => 'control-label'
+				.large-6.columns
+					= f.text_field :surname, :class => 'text_field'
+
+			.row
+				.large-6.columns
+					= f.label :email, :class => 'control-label'
+				.large-6.columns
+					= f.text_field :email, :class => 'text_field'
+					
+			.row
+				.large-6.columns
+					= f.label :password, :class => 'control-label'
+				.large-6.columns
+					= f.password_field :password, :class => 'text_field'
+					
+			.row
+				.large-6.columns
+					= f.label :password_confirmation, :class => 'control-label'
+				.large-6.columns
+					= f.password_field :password_confirmation, :class => 'text_field'
+
+			.row
+				.large-12.columns
+					%p
+						= f.submit "Create Account", :class => 'button'
+						= link_to t('.cancel', :default => t("helpers.links.cancel")), users_path, :class => 'button'

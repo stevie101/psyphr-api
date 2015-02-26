@@ -8,6 +8,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :email
       t.string :locality
       t.string :country
+      t.string :password_digest
       t.timestamps
     end
   end

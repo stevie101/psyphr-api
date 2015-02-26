@@ -6,7 +6,6 @@ class CreateEndEntities < ActiveRecord::Migration
       t.string :e_password                # Password for the ejbca end entity user record
       t.string :did                       # Device Identifier - user specified unique name for a device - added as a OU value in the EE cert
       t.string :slug                      # Friendly name
-      t.text :cert, limit: 64.kilobytes + 1
       t.integer :status, default: 0       # 0 => new, 1 => pending, 2 => enrolled, 4 => revoked
 
       t.timestamps

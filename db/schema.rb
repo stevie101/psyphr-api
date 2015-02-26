@@ -11,30 +11,52 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141202163634) do
+ActiveRecord::Schema.define(version: 20150222210626) do
 
   create_table "apps", force: true do |t|
     t.string   "uuid"
     t.integer  "user_id"
     t.string   "name"
+    t.binary   "client_cert"
+    t.binary   "client_key"
+    t.binary   "ca_cert"
+    t.binary   "ca_key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "serial_number", limit: 8
+    t.integer  "crl_count",               default: 0
+  end
+
+  create_table "certificates", force: true do |t|
+    t.integer  "certificatable_id"
+    t.string   "certificatable_type"
+    t.binary   "certificate"
+    t.string   "distinguished_name"
+    t.datetime "expires_at"
+    t.datetime "revoked_at"
+    t.integer  "serial_number"
+    t.string   "filename",            default: "unknown"
+    t.string   "status"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "certificates", force: true do |t|
-    t.integer  "end_entity_id"
-    t.string   "common_name"
-    t.string   "organisational_unit"
-    t.string   "organisation"
-    t.string   "locality"
-    t.integer  "state"
-    t.string   "country"
-    t.datetime "valid_from"
-    t.datetime "valid_to"
-    t.string   "serial_number"
+  add_index "certificates", ["certificatable_id", "certificatable_type"], name: "index_certificates_on_certificatable_id_and_certificatable_type", using: :btree
+
+  create_table "crls", force: true do |t|
+    t.integer  "crlable_id"
+    t.string   "crlable_type"
+    t.integer  "number"
+    t.binary   "crl"
+    t.datetime "last_update_at"
+    t.datetime "next_update_at"
+    t.string   "issuer_name"
+    t.integer  "serial"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "crls", ["crlable_id", "crlable_type"], name: "index_crls_on_crlable_id_and_crlable_type", using: :btree
 
   create_table "end_entities", force: true do |t|
     t.integer  "app_id"
@@ -42,7 +64,7 @@ ActiveRecord::Schema.define(version: 20141202163634) do
     t.string   "e_password"
     t.string   "did"
     t.string   "slug"
-    t.text     "cert",       limit: 16777215
+    t.binary   "cert",       limit: 16777215
     t.integer  "status",                      default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -55,6 +77,7 @@ ActiveRecord::Schema.define(version: 20141202163634) do
     t.string   "email"
     t.string   "locality"
     t.string   "country"
+    t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

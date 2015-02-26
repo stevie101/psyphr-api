@@ -1,41 +1,64 @@
-%ul
-	%li= "UUID: #{@end_entity.uuid}"
-	%li= "Identifier: #{@end_entity.did}"
-	- if @end_entity.status == 0
-		%li Status: New
-	- elsif @end_entity.status == 1
-		%li Status: Pending
-	- elsif @end_entity.status == 2
-		%li Status: Enrolled
-	- elsif @end_entity.status == 4
-		%li Status: Revoked
+.row
+	.large-6.columns
+		UUID
+	.large-6.columns
+		= @end_entity.uuid
 	
-- if @end_entity.cert	
-
-	%ul
-		%li= @end_entity.cert
-		%li
-			%br
-			= link_to 'revoke', ''
+.row
+	.large-6.columns
+		Identifier
+	.large-6.columns
+		= @end_entity.did
 		
+.row
+	.large-6.columns
+		Status
+	.large-6.columns
+		- if @end_entity.status == 0
+			New
+		- elsif @end_entity.status == 1
+			Pending
+		- elsif @end_entity.status == 2
+			Enrolled
+		- elsif @end_entity.status == 4
+			Revoked
+
+- if @certificates
+	
+	.row
+		.large-12.columns
+			
+			- @certificates.each do | certificate |
+				
+				.row
+					.large-6.columns
+			
+						- cert = OpenSSL::X509::Certificate.new(certificate.certificate)
+						= cert.serial.to_s(16)
+						= "Current cert expires in #{ days_left(cert.not_after) }"
+
+					.large-6.columns
+					
+						= "#{link_to 'pem', admin_end_entity_cert_pem_path(@end_entity)} / #{link_to 'der', admin_end_entity_cert_der_path(@end_entity)}".html_safe
+						|
+						= link_to 'renew', ''
+						|
+						= link_to 'revoke', admin_end_entity_certificate_revoke_path(@end_entity, certificate), method: :post
+
 	
 - else	
 
 	= form_tag admin_end_entity_enrol_path(@end_entity) do 
 		.row
-			.large-4.columns
-				%label.right.inline
+			.large-6.columns
+				%label.inline
 					CSR
-			.large-4.columns
+			.large-6.columns
 				= text_area_tag 'csr'
-			.large-4.columns
-				&nbsp;
 		.row
-			.large-4.columns
-			.large-4.columns
-				= submit_tag 'enrol'
-			.large-4.columns
-				&nbsp;		
+			.large-6.columns
+			.large-6.columns
+				= submit_tag 'enrol', class: 'button'		
 
 
 	= link_to 'create a new certificate', new_admin_end_entity_certificate_path(@end_entity)	

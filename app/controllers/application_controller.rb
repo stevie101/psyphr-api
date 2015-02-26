@@ -5,8 +5,10 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   def current_user
-    # @current_user ||= User.find(session[:user_id]) if session[:user_id]
-    @current_user = User.first            # Until the user authentication is added
+    @current_user ||= User.find(session[:user_id]) if session[:user_id]
+    # @current_user = User.first            # Until the user authentication is added
+  rescue
+    @current_user = nil
   end
   helper_method :current_user
   
