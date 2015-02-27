@@ -19,3 +19,6 @@
 
 /config/database.yml
 /config/deploy.rb
+/config/config.yml
+
+/lib/assets

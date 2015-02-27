@@ -51,7 +51,7 @@ class Api::EstController < ApplicationController
     @app = App.find_by_uuid(params[:uuid])
     ca_cert = OpenSSL::X509::Certificate.new @app.ca_cert
     # Sign it with the CA key for this app
-    ca_key = OpenSSL::PKey::EC.new @app.ca_key
+    ca_key = OpenSSL::PKey::RSA.new @app.ca_key
     
     # Create the certificate
     csr_cert = OpenSSL::X509::Certificate.new
@@ -121,7 +121,7 @@ class Api::EstController < ApplicationController
       @app = App.find_by_uuid(params[:uuid])
       ca_cert = OpenSSL::X509::Certificate.new @app.ca_cert
       # Sign it with the CA key for this app
-      ca_key = OpenSSL::PKey::EC.new @app.ca_key
+      ca_key = OpenSSL::PKey::RSA.new @app.ca_key
 
       # Create the certificate
       csr_cert = OpenSSL::X509::Certificate.new

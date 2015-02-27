@@ -21,7 +21,7 @@ class Admin::AppsController < ApplicationController
       # Create a client certificate for this app
       
       # Generate a client key for app
-      client_key = generate_ec_key
+      client_key = generate_rsa_key
       # Create client cert for app
       client_cert = create_client_cert_for_app_and_key(@app, client_key)
       
@@ -35,7 +35,7 @@ class Admin::AppsController < ApplicationController
       # Create a ca certificate for this app
       
       # Generate a ca key for app
-      ca_key = generate_ec_key
+      ca_key = generate_rsa_key
       # Create ca cert for app
       ca_cert = create_ca_cert_for_app_and_key(@app, ca_key)
       
@@ -80,12 +80,12 @@ class Admin::AppsController < ApplicationController
   end
   
   def client_key_der
-    key = OpenSSL::PKey::EC.new(@app.client_key)
+    key = OpenSSL::PKey::RSA.new(@app.client_key)
     send_data key.to_der, type: 'application/pkcs8', filename: 'client-key.der', disposition: 'attachment'
   end
   
   def client_key_pem
-    key = OpenSSL::PKey::EC.new(@app.client_key)
+    key = OpenSSL::PKey::RSA.new(@app.client_key)
     send_data key.to_pem, type: 'application/x-pem-file', filename: 'client-key.pem', disposition: 'attachment'
   end
   
@@ -100,7 +100,7 @@ class Admin::AppsController < ApplicationController
   end
   
   def client_pkcs12_der
-    key = OpenSSL::PKey::EC.new(@app.client_key)
+    key = OpenSSL::PKey::RSA.new(@app.client_key)
     cert = OpenSSL::X509::Certificate.new(@app.client_cert)
     p12 = OpenSSL::PKCS12.create("passwd", "Cloud Sec Client Certificate", key, cert)
     send_data cert.to_der, type: 'application/x-pkcs12', filename: 'client-archive.p12', disposition: 'attachment'
@@ -164,9 +164,14 @@ private
     params.require(:app).permit(:user_id, :name)
   end
   
-  def generate_ec_key
-    key = OpenSSL::PKey::EC.new("prime256v1")
-    key.generate_key
+  # def generate_ec_key
+  #   key = OpenSSL::PKey::EC.new("prime256v1")
+  #   key.generate_key
+  #   return key
+  # end
+  
+  def generate_rsa_key
+    key = OpenSSL::PKey::RSA.new(2048)
     return key
   end
   
@@ -187,11 +192,10 @@ private
     raise 'CSR can not be verified' unless csr.verify csr.public_key
     
     # Load the server CA cert
-    ca_cert = OpenSSL::X509::Certificate.new File.read "#{Rails.root}/lib/assets/server-cert.pem"
+    ca_cert = OpenSSL::X509::Certificate.new File.read(APP_CONFIG[:ca_cert].to_s)
     
     # Sign it with the server CA key
-    
-    ca_key = OpenSSL::PKey::EC.new File.read "#{Rails.root}/lib/assets/server-key.pem"
+    ca_key = OpenSSL::PKey::RSA.new File.read(APP_CONFIG[:ca_key].to_s)
     
     csr_cert = OpenSSL::X509::Certificate.new
     csr_cert.serial = UUIDTools::UUID.timestamp_create.hash
@@ -224,11 +228,15 @@ private
     raise 'CSR can not be verified' unless csr.verify csr.public_key
     
     # Load the CA cert
-    ca_cert = OpenSSL::X509::Certificate.new File.read "#{Rails.root}/lib/assets/server-cert.pem"
+    puts "---|"
+    puts APP_CONFIG[:ca_cert]
+    puts "|---"
+    
+    ca_cert = OpenSSL::X509::Certificate.new File.read(APP_CONFIG[:ca_cert].to_s)
     
     # Sign it with the server CA key
     
-    ca_key = OpenSSL::PKey::EC.new File.read "#{Rails.root}/lib/assets/server-key.pem"
+    ca_key = OpenSSL::PKey::RSA.new File.read(APP_CONFIG[:ca_key].to_s)
     
     csr_cert = OpenSSL::X509::Certificate.new
     csr_cert.serial = UUIDTools::UUID.timestamp_create.hash
