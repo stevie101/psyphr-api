@@ -11,7 +11,7 @@ ssl_options = {
   ca_file: File.expand_path(File.dirname(__FILE__)) + '/ca.crt',
   version: :TLSv1_2
 }
-conn = Faraday.new(url: 'https://cloudsec.com', ssl: ssl_options) do |faraday|
+conn = Faraday.new(url: 'https://api.cloudsec.com', ssl: ssl_options) do |faraday|
   faraday.request  :url_encoded             # form-encode POST params
   faraday.response :logger                  # log requests to STDOUT
   faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
