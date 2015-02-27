@@ -6,6 +6,8 @@ set :repo_url, 'git@github.com:stevie101/sec-server.git'
 set :deploy_to, "/home/user/apps/#{fetch(:application)}/"
 set :deploy_via, :copy
 
+set :default_environment, 'JAVA_HOME' => "/usr/lib/jvm/default-java"
+
 set :ssh_options, {
   user: "user",
   forward_agent: true,
