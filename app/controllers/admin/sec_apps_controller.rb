@@ -180,7 +180,7 @@ class Admin::SecAppsController < ApplicationController
       csr.version = 1
       csr.subject = OpenSSL::X509::Name.parse subject
       csr.public_key = key
-      csr.sign key, OpenSSL::Digest::SHA256.new
+      csr.sign key, OpenSSL::Digest::SHA1.new
       return csr
     end
 

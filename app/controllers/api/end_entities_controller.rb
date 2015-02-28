@@ -2,12 +2,35 @@ class Api::EndEntitiesController < ApplicationController
 
   def create
         
-    @end_entity = EndEntity.new(end_entity_params)
-    @app = SecApp.find_by_uuid(params[:end_entity][:sec_app_id])
-    @end_entity.sec_app_id = @app.id
-    @end_entity.save
+    # Get app for the given app uuid
+    @app = SecApp.find_by_uuid(params[:end_entity][:sec_app_id])   
+    
+    if @app
 
-    render json: {uuid: @end_entity.uuid}, status: 200 and return
+      # Check if an entity already exists for this app
+      @end_entity = @app.end_entities.find_by_did(params[:end_entity][:did])
+      
+      if not @end_entity
+        
+        @end_entity = EndEntity.new(end_entity_params)
+        @end_entity.sec_app_id = @app.id
+        @end_entity.save
+        
+        render json: {uuid: @end_entity.uuid}, status: 200 and return
+        
+      else
+      
+        render json: {error: true, message: 'Entity already exists'}, status: 200 and return
+      
+      end
+    
+      render json: {uuid: @end_entity.uuid}, status: 200 and return
+    
+    else
+      
+      render json: {error: true, message: 'Invalid app uuid'}, status: 200 and return
+    
+    end
 
   end
 
