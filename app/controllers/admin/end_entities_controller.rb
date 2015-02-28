@@ -13,7 +13,7 @@ class Admin::EndEntitiesController < ApplicationController
   
   def new
     
-    @apps = @current_user.apps
+    @apps = @current_user.sec_apps
     @end_entity = EndEntity.new
     
   end
@@ -22,9 +22,9 @@ class Admin::EndEntitiesController < ApplicationController
     
     @end_entity = EndEntity.new(end_entity_params)
     
-    @app = current_user.apps.find(params[:app][:id])
+    @app = current_user.sec_apps.find(params[:sec_app][:id])
     
-    @end_entity.app_id = @app.id
+    @end_entity.sec_app_id = @app.id
 
     if @end_entity.save
       
@@ -76,7 +76,7 @@ class Admin::EndEntitiesController < ApplicationController
     # TODO - Perform CSR attribute check before enrolling
     
     @end_entity = @current_user.end_entities.find(params[:end_entity_id])
-    @app = current_user.apps.find(@end_entity.app_id)
+    @app = current_user.sec_apps.find(@end_entity.sec_app_id)
     
     # rejbca = Rejbca.instance
     
@@ -150,7 +150,7 @@ private
   end
 
   def end_entity_params
-    params.require(:end_entity).permit(:app_id, :did)
+    params.require(:end_entity).permit(:sec_app_id, :did)
   end
 
 end

@@ -1,5 +1,6 @@
 require 'uuidtools'
-class App < ActiveRecord::Base
+class SecApp < ActiveRecord::Base
+
   has_many :certificates, as: :certificatable
   has_many :crls, as: :crlable
   has_many :end_entities
@@ -26,5 +27,5 @@ class App < ActiveRecord::Base
   def has_ca_certificate
     ca_certificate != nil
   end
-
+  
 end

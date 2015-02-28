@@ -13,9 +13,9 @@ Rails.application.routes.draw do
   
   namespace 'api' do
 
-    get '/cacerts', to: 'est#cacerts'
-    post '/simpleenroll', to: 'est#simpleenroll'
-    post '/simplereenroll', to: 'est#simplereenroll'
+    # get '/cacerts', to: 'est#cacerts'
+    # post '/simpleenroll', to: 'est#simpleenroll'
+    # post '/simplereenroll', to: 'est#simplereenroll'
 
     resource :cert, controller: 'cert', only: [:show] do
 
@@ -39,7 +39,7 @@ Rails.application.routes.draw do
   
   namespace 'admin' do
     resources :users
-    resources :apps do
+    resources :apps, controller: 'sec_apps' do
       get 'client_key_pem'
       get 'client_key_der'
       get 'client_cert_pem'

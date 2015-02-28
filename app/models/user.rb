@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
-  has_many :apps
-  has_many :end_entities, through: :apps
+  has_many :sec_apps
+  has_many :end_entities, through: :sec_apps
   
   has_secure_password
   

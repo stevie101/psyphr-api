@@ -3,6 +3,8 @@
 require 'openssl'
 require 'faraday'
 
+# @uuid = 
+
 #puts File.expand_path(File.dirname(__FILE__)) + '/server-cert.pem'
 
 ssl_options = {
@@ -17,7 +19,7 @@ conn = Faraday.new(url: 'https://api.cloudsec.com', ssl: ssl_options) do |farada
   faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
 end
 
-response = conn.get '/'     # GET
+response = conn.get '/.well-known/est/:uuid/cacerts'     # GET
 puts response.body
 
 

@@ -15,11 +15,11 @@ class Api::EstController < ApplicationController
     headers['Content-Transfer-Encoding'] = "base64"
     
     # Load the CloudSec ROOT CA cert
-    ca_cert = OpenSSL::X509::Certificate.new File.read "#{Rails.root}/lib/assets/server-cert.pem"
+    ca_cert = OpenSSL::X509::Certificate.new File.read "#{Rails.root}/lib/assets/ca.crt"
     
     # Load App SubCA cert
-    @app = App.find_by_uuid(params[:uuid])
-    app_cert = OpenSSL::X509::Certificate.new(@app.ca_cert)
+    @app = SecApp.find_by_uuid(params[:uuid])
+    app_cert = OpenSSL::X509::Certificate.new(@app.ca_certificate.certificate)
     
     pkcs7 = OpenSSL::PKCS7.new
     pkcs7.type = 'signed'
@@ -48,8 +48,8 @@ class Api::EstController < ApplicationController
     @entity = EndEntity.find_by_uuid(uuid)
     
     # Load the CA cert for this app
-    @app = App.find_by_uuid(params[:uuid])
-    ca_cert = OpenSSL::X509::Certificate.new @app.ca_cert
+    @app = SecApp.find_by_uuid(params[:uuid])
+    ca_cert = OpenSSL::X509::Certificate.new @app.ca_certificate.certificate
     # Sign it with the CA key for this app
     ca_key = OpenSSL::PKey::RSA.new @app.ca_key
     
@@ -118,8 +118,8 @@ class Api::EstController < ApplicationController
     if @certificate.distinguished_name = csr.subject.to_s
 
       # Load the CA cert for this app
-      @app = App.find_by_uuid(params[:uuid])
-      ca_cert = OpenSSL::X509::Certificate.new @app.ca_cert
+      @app = SecApp.find_by_uuid(params[:uuid])
+      ca_cert = OpenSSL::X509::Certificate.new @app.ca_certificate.certificate
       # Sign it with the CA key for this app
       ca_key = OpenSSL::PKey::RSA.new @app.ca_key
 

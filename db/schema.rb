@@ -13,29 +13,15 @@
 
 ActiveRecord::Schema.define(version: 20150222210626) do
 
-  create_table "apps", force: true do |t|
-    t.string   "uuid"
-    t.integer  "user_id"
-    t.string   "name"
-    t.binary   "client_cert"
-    t.binary   "client_key"
-    t.binary   "ca_cert"
-    t.binary   "ca_key"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "serial_number", limit: 8
-    t.integer  "crl_count",               default: 0
-  end
-
   create_table "certificates", force: true do |t|
     t.integer  "certificatable_id"
     t.string   "certificatable_type"
-    t.binary   "certificate"
+    t.binary   "certificate",         limit: 16777215
     t.string   "distinguished_name"
     t.datetime "expires_at"
     t.datetime "revoked_at"
-    t.integer  "serial_number"
-    t.string   "filename",            default: "unknown"
+    t.string   "serial_number"
+    t.string   "filename",                             default: "unknown"
     t.string   "status"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -59,15 +45,26 @@ ActiveRecord::Schema.define(version: 20150222210626) do
   add_index "crls", ["crlable_id", "crlable_type"], name: "index_crls_on_crlable_id_and_crlable_type", using: :btree
 
   create_table "end_entities", force: true do |t|
-    t.integer  "app_id"
+    t.integer  "sec_app_id"
     t.string   "uuid"
     t.string   "e_password"
     t.string   "did"
     t.string   "slug"
-    t.binary   "cert",       limit: 16777215
-    t.integer  "status",                      default: 0
+    t.integer  "status",     default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "sec_apps", force: true do |t|
+    t.string   "uuid"
+    t.integer  "user_id"
+    t.string   "name"
+    t.binary   "client_key"
+    t.binary   "ca_key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "serial_number", limit: 8
+    t.integer  "crl_count",               default: 0
   end
 
   create_table "users", force: true do |t|

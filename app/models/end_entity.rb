@@ -2,7 +2,7 @@ require 'uuidtools'
 
 class EndEntity < ActiveRecord::Base
 
-  belongs_to :app
+  belongs_to :sec_app
   has_many :certificates, as: :certificatable
   
   before_create :generate_uuid, :ejbca_password
