@@ -2,8 +2,9 @@
 
 require 'openssl'
 require 'faraday'
+require 'base64'
 
-# @uuid = 
+@app_uuid = '9b33a672-be9b-11e4-b911-0800274c20f7'
 
 #puts File.expand_path(File.dirname(__FILE__)) + '/server-cert.pem'
 
@@ -19,7 +20,12 @@ conn = Faraday.new(url: 'https://api.cloudsec.com', ssl: ssl_options) do |farada
   faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
 end
 
-response = conn.get '/.well-known/est/:uuid/cacerts'     # GET
+response = conn.get "/.well-known/est/#{@app_uuid}/cacerts"     # GET
+
+pkcs7 = OpenSSL::PKCS7.new Base64.decode64 response.body
+
+response = conn.post "/api/end_entities/", { end_entity: { sec_app_id: @app_uuid, did: 'new entity' } }
+
 puts response.body
 
 

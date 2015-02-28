@@ -23,7 +23,7 @@ class Api::EstController < ApplicationController
     
     pkcs7 = OpenSSL::PKCS7.new
     pkcs7.type = 'signed'
-    pkcs7.certificates = [ca_cert, app_cert]
+    pkcs7.certificates = [app_cert, ca_cert]
     
     # render text: , status: 200 and return
     # send_data pkcs7.to_der, type: 'application/x-x509-ca-cert', filename: 'cacerts.der', disposition: 'inline'
