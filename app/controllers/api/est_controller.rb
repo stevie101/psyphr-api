@@ -58,8 +58,8 @@ class Api::EstController < ApplicationController
     csr_cert.serial = UUIDTools::UUID.timestamp_create.hash
     csr_cert.version = 2
     csr_cert.not_before = Time.now
-    # csr_cert.not_after = Time.now + (60*60*24*365)    # Validity 1 year from now
-    csr_cert.not_after = Time.now + (60*10)    # Validity 10 minutes from now
+    csr_cert.not_after = Time.now + (60*60*24*365)    # Validity 1 year from now
+    # csr_cert.not_after = Time.now + (60*10)    # Validity 10 minutes from now
 
 
     csr_cert.subject = csr.subject
@@ -130,8 +130,8 @@ class Api::EstController < ApplicationController
       csr_cert.serial = UUIDTools::UUID.timestamp_create.hash
       csr_cert.version = 2
       csr_cert.not_before = Time.now
-      # csr_cert.not_after = Time.now + (60*60*24*365)    # Validity 1 year from now
-      csr_cert.not_after = Time.now + (60*10)    # Validity 10 minutes from now
+      csr_cert.not_after = Time.now + (60*60*24*365)    # Validity 1 year from now
+      # csr_cert.not_after = Time.now + (60*10)    # Validity 10 minutes from now
 
 
       csr_cert.subject = csr.subject
