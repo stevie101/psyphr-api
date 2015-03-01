@@ -71,7 +71,7 @@ class Api::EndEntities::CertificatesController < ApplicationController
   
   def require_app
     
-    @app = SecApp.find_by_uuid(params[:sec_app_id])
+    @app = SecApp.find_by_uuid(params[:end_entity][:sec_app_id])
     
     unless @app
     

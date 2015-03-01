@@ -19,18 +19,26 @@ class Api::EstController < ApplicationController
     
     # Load App SubCA cert
     @app = SecApp.find_by_uuid(params[:uuid])
-    app_cert = OpenSSL::X509::Certificate.new(@app.ca_certificate.certificate)
     
-    pkcs7 = OpenSSL::PKCS7.new
-    pkcs7.type = 'signed'
-    pkcs7.certificates = [app_cert, ca_cert]
+    if @app
     
-    # render text: , status: 200 and return
-    # send_data pkcs7.to_der, type: 'application/x-x509-ca-cert', filename: 'cacerts.der', disposition: 'inline'
+      app_cert = OpenSSL::X509::Certificate.new(@app.ca_certificate.certificate)
+    
+      pkcs7 = OpenSSL::PKCS7.new
+      pkcs7.type = 'signed'
+      pkcs7.certificates = [app_cert, ca_cert]
+    
+      # render text: , status: 200 and return
+      # send_data pkcs7.to_der, type: 'application/x-x509-ca-cert', filename: 'cacerts.der', disposition: 'inline'
   
-    render text: Base64.encode64(pkcs7.to_pem), status: 200 and return
+      render text: Base64.encode64(pkcs7.to_pem), status: 200 and return
   
-    # Need to include OldWithOld, OldWithNew and NewWithOld when appropriate
+      # Need to include OldWithOld, OldWithNew and NewWithOld when appropriate
+    else
+    
+      render json: {error: true, message: 'Invalid app UUID'}, status: 200 and return
+    
+    end
   
   end
   
