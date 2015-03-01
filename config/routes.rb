@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     
     get 'test'
 
-    resources :end_entities, only: [] do
+    resources :end_entities, only: [:create] do
       resource :certificate, controller: 'end_entities/certificates' do
         get 'fingerprint'
       end
