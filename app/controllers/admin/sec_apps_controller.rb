@@ -156,7 +156,7 @@ class Admin::SecAppsController < ApplicationController
 
     def require_app
       if params[:app_id]
-        @app = SecApp.find(params[:sec_app_id])
+        @app = SecApp.find(params[:app_id])
       else
         @app = SecApp.find(params[:id])
       end
