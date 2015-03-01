@@ -103,18 +103,18 @@ class Admin::SecAppsController < ApplicationController
 
     def client_pkcs12_der
       key = OpenSSL::PKey::RSA.new(@app.client_key)
-      cert = OpenSSL::X509::Certificate.new(@app.client_cert)
+      cert = OpenSSL::X509::Certificate.new(@app.client_certificate.certificate)
       p12 = OpenSSL::PKCS12.create("passwd", "Cloud Sec Client Certificate", key, cert)
       send_data cert.to_der, type: 'application/x-pkcs12', filename: 'client-archive.p12', disposition: 'attachment'
     end
 
     def ca_cert_der
-      cert = OpenSSL::X509::Certificate.new(@app.ca_cert)
+      cert = OpenSSL::X509::Certificate.new(@app.ca_certificate.certificate)
       send_data cert.to_der, type: 'application/x-x509-ca-cert', filename: 'ca-cert.der', disposition: 'attachment'
     end
 
     def ca_cert_pem
-      cert = OpenSSL::X509::Certificate.new(@app.ca_cert)
+      cert = OpenSSL::X509::Certificate.new(@app.ca_certificate.certificate)
       send_data cert.to_pem, type: 'application/x-pem-file', filename: 'ca-cert.pem', disposition: 'attachment'
     end
 
