@@ -88,7 +88,7 @@ class Admin::EndEntitiesController < ApplicationController
     raise 'CSR can not be verified' unless csr.verify csr.public_key
     
     # Load the CA cert for this app
-    ca_cert = OpenSSL::X509::Certificate.new @app.ca_cert
+    ca_cert = OpenSSL::X509::Certificate.new @app.ca_certificate.certificate
     # Sign it with the CA key for this app
     ca_key = OpenSSL::PKey::RSA.new @app.ca_key
     

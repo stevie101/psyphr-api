@@ -12,25 +12,13 @@ Rails.application.routes.draw do
   post '.well-known/est/:uuid/simplereenroll', to: 'api/est#simplereenroll'
   
   namespace 'api' do
-
-    # get '/cacerts', to: 'est#cacerts'
-    # post '/simpleenroll', to: 'est#simpleenroll'
-    # post '/simplereenroll', to: 'est#simplereenroll'
-
-    resource :cert, controller: 'cert', only: [:show] do
-
-      get 'fingerprint'
-
-    end
-    
-    resource :devices do
-      resource :cert
-    end
     
     get 'test'
 
-    resources :end_entities do
-      resource :certificate, controller: 'end_entities/certificates'
+    resources :end_entities, only: [] do
+      resource :certificate, controller: 'end_entities/certificates' do
+        get 'fingerprint'
+      end
     end
 
   end
