@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       post 'revoke_client_cert'
       post 'revoke_ca_cert'
       get 'download_crl'
+      resources :end_entities
     end
     resources :end_entities do
       post :enrol
@@ -45,6 +46,7 @@ Rails.application.routes.draw do
       get 'cert_der'
       resources :certificates, controller: 'end_entities/certificates' do
         post 'revoke'
+        post 'renew'
       end
     end
   

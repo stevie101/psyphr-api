@@ -73,6 +73,8 @@ class Admin::SecAppsController < ApplicationController
         @ca_not_after = @ca_cert.not_after
       end
 
+      @entity_count = @app.end_entities.count
+
     end
 
     def revoke

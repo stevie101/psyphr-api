@@ -1,2 +1,0 @@
-module Admin::SecAppsHelper
-end
