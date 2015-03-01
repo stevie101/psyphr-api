@@ -115,6 +115,8 @@ class Admin::EndEntitiesController < ApplicationController
 
     csr_cert.add_extension    extension_factory.create_extension('subjectKeyIdentifier', 'hash')
 
+    csr_cert.add_extension    extension_factory.create_extension('crlDistributionPoints', "URI:https://cloudsec.com/apps/#{@app.uuid}/subca.crl ")
+
     csr_cert.sign ca_key, OpenSSL::Digest::SHA1.new
     
     certificate = Certificate.new(certificate: csr_cert.to_der, expires_at: csr_cert.not_after, status: 'V', distinguished_name: csr_cert.subject.to_s, serial_number: csr_cert.serial)

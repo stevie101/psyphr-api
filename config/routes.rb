@@ -21,6 +21,12 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :apps, controller: 'sec_apps' do
+      member do
+        get ':filename', to: 'sec_apps#crl'
+      end
+    end
+
   end
   
   resource :admin, controller: 'admin'

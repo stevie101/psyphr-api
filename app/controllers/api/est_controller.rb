@@ -85,6 +85,8 @@ class Api::EstController < ApplicationController
 
     csr_cert.add_extension    extension_factory.create_extension('subjectKeyIdentifier', 'hash')
 
+    csr_cert.add_extension    extension_factory.create_extension('crlDistributionPoints', "URI:https://cloudsec.com/apps/#{@app.uuid}/subca.crl ")
+
     csr_cert.sign ca_key, OpenSSL::Digest::SHA1.new
     
     puts csr_cert.to_pem
@@ -156,6 +158,8 @@ class Api::EstController < ApplicationController
           'keyUsage', 'keyEncipherment,dataEncipherment,digitalSignature')
 
       csr_cert.add_extension    extension_factory.create_extension('subjectKeyIdentifier', 'hash')
+
+      csr_cert.add_extension    extension_factory.create_extension('crlDistributionPoints', "URI:https://cloudsec.com/apps/#{@app.uuid}/subca.crl ")
 
       csr_cert.sign ca_key, OpenSSL::Digest::SHA1.new
 
