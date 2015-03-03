@@ -1,0 +1,10 @@
+.row
+	.large-12.columns
+		%h5
+			%strong Difference between renewing and rekeying a certificate
+		%p Both renewing and rekeying result in the generation of a new certificate with a new serial number. The difference between the two is that renewing will maintain the same public key whereas rekeying will use a new user provided public key and will therefore require a new CSR. Both renewed and rekeyed certificates will retain the same attributes and subject name as the original certificate.
+		
+		%h5
+			%strong What is a CSR
+		%p A Certificate Signing Request or CSR is a message that is presented to a Certificate Authority (CA) to apply for an X.509 certificate. PSYPHR requires CSRs to be formatted using the common PKCS#10 specification.
+			

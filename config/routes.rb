@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get 'login', to: 'sessions#new', as: :login
   get 'join', to: 'users#new', as: :join
   get 'logout', to: 'sessions#destroy', as: :logout
+  get 'help', to: 'help#index', as: :help
   
   resources :sessions
   resources :users
@@ -43,16 +44,17 @@ Rails.application.routes.draw do
       get 'ca_cert_der'
       post 'revoke_client_cert'
       post 'revoke_ca_cert'
-      get 'download_crl'
-      resources :end_entities
-    end
-    resources :end_entities do
-      post :enrol
-      get 'cert_pem'
-      get 'cert_der'
-      resources :certificates, controller: 'end_entities/certificates' do
-        post 'revoke'
+      get 'generate_crl'
+      get 'download_arl'
+      resources :end_entities, controller: 'sec_apps/end_entities' do
+        post :enrol
         post 'renew'
+        post 'rekey'
+        get 'cert_pem'
+        get 'cert_der'
+        resources :certificates, controller: 'sec_apps/end_entities/certificates' do
+          post 'revoke'      
+        end
       end
     end
   

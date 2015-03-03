@@ -22,3 +22,5 @@
 /config/config.yml
 
 /lib/assets
+
+/public/pki

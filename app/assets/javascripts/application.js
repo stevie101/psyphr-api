@@ -17,3 +17,16 @@
 //= require_tree .
 
 $(function(){ $(document).foundation(); });
+
+$(document).ready(function() {
+
+	$('#rekey-button').click(function(e){
+		$('#rekey-form').show();
+	})
+	
+	$('#rekey-cancel-button').click(function(e){
+		$('#rekey-form').hide();
+	})
+
+});
+

@@ -1,12 +1,19 @@
 .row
 	.large-12.columns
+		%ul.breadcrumbs
+			%li.current apps
+
+.row
+	.large-12.columns
 
 		- if @apps and @apps.length > 0
 			%ul.unstyled
 				- @apps.each do |app|
 					%li
-						= link_to app.name, admin_app_path(app)
-						= link_to 'destroy', admin_app_path(app), {method: :delete, remote: true}
+						%h3
+							= link_to app.name, admin_app_path(app)
+						
+							= link_to 'destroy', admin_app_path(app), {method: :delete, remote: true, class: 'button tiny'}
 		- else
 			%p No apps yet
 	
