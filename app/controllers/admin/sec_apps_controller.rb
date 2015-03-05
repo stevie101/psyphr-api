@@ -38,7 +38,7 @@ class Admin::SecAppsController < ApplicationController
     end
 
     def show 
-
+      
       @cert, @ca_cert, @not_after, @ca_not_after = nil
 
       if @app.has_client_certificate
@@ -55,8 +55,23 @@ class Admin::SecAppsController < ApplicationController
 
     end
 
-    def revoke
+    # The client cert is signed by the psyphr CA cert
+    # So the revoked serial number should appear on the global psyphr CRL
+    def revoke_client_cert
+      
+      @app.revoke_client_cert
+        
+      redirect_to admin_app_path(@app)
 
+    end
+
+    def revoke_ca_cert
+      
+      @app.revoke_ca_cert
+      @app.generate_arl
+      
+      redirect_to admin_app_path(@app)
+      
     end
 
     def client_key_der
@@ -104,51 +119,20 @@ class Admin::SecAppsController < ApplicationController
       redirect_to admin_app_path(@app)
 
     end
-
-    # Need to move this out to a recurring script so it's not generated on the fly each time
-    def download_arl
+    
+    def rekey_ca_cert
       
-      revoked_certificates = []
+      @app.create_ca_certificate
       
-      SecApp.app_certificates.where(status: 'R').each do |cert|
-        revoked_certificates << cert
-      end
+      redirect_to admin_app_path(@app)
       
-      # Load the server CA cert
-      ca_cert = OpenSSL::X509::Certificate.new File.read(APP_CONFIG[:ca_cert].to_s)
+    end
 
-      # Sign it with the server CA key
-      ca_key = OpenSSL::PKey::RSA.new File.read(APP_CONFIG[:ca_key].to_s)
+    def rekey_client_cert
       
-
-      crl = OpenSSL::X509::CRL.new
-      crl.issuer = ca_cert.subject
-      crl.last_update = Time.now
-      crl.next_update = Time.now + (60*60*24*60)
-
-      crl.add_extension(OpenSSL::X509::Extension.new("crlNumber", OpenSSL::ASN1::Integer(1), false))
-      crl.add_extension(OpenSSL::X509::Extension.new("authorityKeyIdentifier","keyid:always",false))
-
-      crl.version = 1 # Specify CRL v2 (integer value: 1)
-
-      # app.update_attributes()
-
-      revoked_certificates.each do |cert|
-        
-        certificate = OpenSSL::X509::Certificate.new cert.certificate
-        
-        revoked = OpenSSL::X509::Revoked.new
-        
-        revoked.serial = certificate.serial
-        revoked.time = cert.revoked_at
-
-        crl.add_revoked revoked
-        
-      end
-
-      crl.sign ca_key, OpenSSL::Digest::SHA1.new
-
-      send_data crl.to_der, type: 'application/x-pkcs7-crl', filename: 'psyphr-arl.crl', disposition: 'attachment'
+      @app.create_client_certificate
+      
+      redirect_to admin_app_path(@app)
       
     end
 

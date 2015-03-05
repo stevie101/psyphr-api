@@ -1,5 +1,6 @@
 require 'uuidtools'
 require 'fileutils'
+require 'psyphr'
 
 class SecApp < ActiveRecord::Base
 
@@ -19,68 +20,73 @@ class SecApp < ActiveRecord::Base
   # Need to create a recurring script that generates new CRLs periodically
   def generate_crl
     
-    # Get the revoked certificates
-    revoked_certificates = []
+    # CRL can only be created if 
+    if ca_certificate
     
-    end_entity_certificates.where(status: 'R').each do |cert|
-      revoked_certificates << cert
-    end
+      # Get the revoked certificates
+      revoked_certificates = []
     
-    client_certificates.where(status: 'R').each do |cert|
-      revoked_certificates << cert
-    end
-
-    # Load the App's cert and key
-    ca_cert = OpenSSL::X509::Certificate.new(ca_certificate.certificate)
-    ca_key = OpenSSL::PKey::RSA.new self.ca_key
-
-    # Create a new CRL object
-    crl = OpenSSL::X509::CRL.new
+      end_entity_certificates.where(status: 'R').each do |cert|
+        revoked_certificates << cert
+      end
     
-    # Add the PSYPHR CA as the issuer
-    crl.issuer = ca_cert.subject
+      client_certificates.where(status: 'R').each do |cert|
+        revoked_certificates << cert
+      end
+
+      # Load the App's cert and key
+      ca_cert = OpenSSL::X509::Certificate.new(ca_certificate.certificate)
+      ca_key = OpenSSL::PKey::RSA.new self.ca_key
+
+      # Create a new CRL object
+      crl = OpenSSL::X509::CRL.new
     
-    # Add the validity dates
-    crl.last_update = Time.now
-    crl.next_update = Time.now + (60*60*24*2)
+      # Add the PSYPHR CA as the issuer
+      crl.issuer = ca_cert.subject
+    
+      # Add the validity dates
+      crl.last_update = Time.now
+      crl.next_update = Time.now + (60*60*24*2)
 
-    # Add the CRL extensions
-    crl.add_extension(OpenSSL::X509::Extension.new("crlNumber", OpenSSL::ASN1::Integer(crl_count+1), false))
-    crl.add_extension(OpenSSL::X509::Extension.new("authorityKeyIdentifier","keyid:always",false))
+      # Add the CRL extensions
+      crl.add_extension(OpenSSL::X509::Extension.new("crlNumber", OpenSSL::ASN1::Integer(crl_count+1), false))
+      crl.add_extension(OpenSSL::X509::Extension.new("authorityKeyIdentifier","keyid:always",false))
 
-    # Set the CRL version
-    crl.version = 1 # Specify CRL v2 (integer value: 1)
+      # Set the CRL version
+      crl.version = 1 # Specify CRL v2 (integer value: 1)
 
-    # Add the revoked certificate serial numbers to the CRL
-    revoked_certificates.each do |cert|
+      # Add the revoked certificate serial numbers to the CRL
+      revoked_certificates.each do |cert|
       
-      certificate = OpenSSL::X509::Certificate.new cert.certificate
+        certificate = OpenSSL::X509::Certificate.new cert.certificate
       
-      revoked = OpenSSL::X509::Revoked.new
+        revoked = OpenSSL::X509::Revoked.new
       
-      revoked.serial = certificate.serial
-      revoked.time = cert.revoked_at
+        revoked.serial = certificate.serial
+        revoked.time = cert.revoked_at
 
-      crl.add_revoked revoked
+        crl.add_revoked revoked
       
-    end
+      end
 
-    # Sign the CRL with the App's key
-    crl.sign ca_key, OpenSSL::Digest::SHA1.new
+      # Sign the CRL with the App's key
+      crl.sign ca_key, OpenSSL::Digest::SHA1.new
 
-    # Increment the app CRL counter
-    update_attributes(crl_count: crl_count+1)
+      # Increment the app CRL counter
+      update_attributes(crl_count: crl_count+1)
 
-    # Create a unique folder for this app's CRL
-    dirname = "#{Rails.root}/public/pki/cdp/crl/#{uuid}"
+      # Create a unique folder for this app's CRL
+      dirname = "#{Rails.root}/public/pki/cdp/crl/#{uuid}"
     
-    unless File.directory?(dirname)
-      FileUtils.mkdir_p(dirname)
-    end
+      unless File.directory?(dirname)
+        FileUtils.mkdir_p(dirname)
+      end
 
-    # Write the CRL to file
-    File.open("#{Rails.root}/public/pki/cdp/crl/#{uuid}/subca.crl", 'wb') do |f|
-      f.write crl.to_der
+      # Write the CRL to file
+      File.open("#{Rails.root}/public/pki/cdp/crl/#{uuid}/subca.crl", 'wb') do |f|
+        f.write crl.to_der
+      end
+      
     end
     
   end
@@ -191,6 +197,39 @@ class SecApp < ActiveRecord::Base
   def self.generate_rsa_key
     key = OpenSSL::PKey::RSA.new(2048)
     return key
+  end
+  
+  def revoke_client_cert
+    
+    client_cert = self.client_certificate
+    if client_cert
+      client_cert.revoke
+      # Nullify the existing client_key
+      update_attributes(client_key: nil)
+      generate_psyphr_crl
+    end
+    
+  end
+  
+  def revoke_ca_cert
+    
+    ca_cert = self.ca_certificate
+    if ca_cert
+      ca_cert.revoke
+      # Nullify the existing ca_key
+      update_attributes(ca_key: nil)
+    end
+    
+  end
+  
+  def generate_psyphr_crl
+    # Generate a new Psyphr CRL
+    Psyphr.generate_crl
+  end
+  
+  def generate_arl
+    # Generate a new ARL
+    Psyphr.generate_arl
   end
   
 end

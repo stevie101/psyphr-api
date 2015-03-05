@@ -4,6 +4,7 @@
 			%li= link_to 'apps', admin_apps_path
 			%li.current= @app.name
 
+
 .row
 	.large-12.columns
 		
@@ -23,8 +24,12 @@
 				.right
 					= @app.uuid
 
-		- if @app.has_client_certificate
+		- client_cert = @app.client_certificate
 
+		- if client_cert
+
+			- client_certificate = OpenSSL::X509::Certificate.new client_cert.certificate
+		
 			.row
 				.large-6.columns
 					= "Current client cert expires in #{ days_left(@not_after) } (#{@cert.serial.to_s(16)})"
@@ -32,10 +37,22 @@
 				
 					.right
 						= link_to 'Renew', '', class: 'button tiny'
-						= link_to 'Rekey', '', class: 'button tiny'
-						= link_to 'Revoke', admin_app_revoke_client_cert_path(@app), class: 'button tiny'
+						= link_to 'Revoke', admin_app_revoke_client_cert_path(@app), method: :post, data: {confirm: "Revoke certificate (#{client_certificate.serial.to_s(16)})?"}, class: 'button tiny'
 					
-		- if @app.has_ca_certificate	
+		- else
+		
+			.row
+				.large-6.columns
+					Client Certificate
+				.large-6.columns
+					.right
+						= link_to 'Rekey', admin_app_rekey_client_cert_path(@app), method: :post, class: 'button tiny'
+		
+		- ca_cert = @app.ca_certificate
+					
+		- if ca_cert	
+				
+			- ca_certificate = OpenSSL::X509::Certificate.new ca_cert.certificate	
 				
 			.row
 				.large-6.columns
@@ -44,49 +61,62 @@
 				
 					.right
 						= link_to 'Renew', '', class: 'button tiny'
-						= link_to 'Rekey', '', class: 'button tiny'
-						= link_to 'Revoke', admin_app_revoke_ca_cert_path(@app), class: 'button tiny'
-					
+						= link_to 'Revoke', admin_app_revoke_ca_cert_path(@app), method: :post, data: {confirm: "Revoke certificate (#{ca_certificate.serial.to_s(16)})?"}, class: 'button tiny'
+				
+				
+		- else
+		
+			.row
+				.large-6.columns
+					CA Certificate
+				.large-6.columns
+					.right
+						= link_to 'Rekey', admin_app_rekey_ca_cert_path(@app), method: :post,  class: 'button tiny'
 
 .row
 	.large-12.columns
 
-		.row
-			.large-6.columns
-				Client Key
-			.large-6.columns
-			
-				.right
-					= link_to 'pem', admin_app_client_key_pem_path(@app), class: 'button tiny'
-					= link_to 'der', admin_app_client_key_der_path(@app), class: 'button tiny'
-				
-		.row
-			.large-6.columns
-				Client Cert
-			.large-6.columns
-			
-				.right
-					= link_to 'pem', admin_app_client_cert_pem_path(@app), class: 'button tiny'
-					= link_to 'der', admin_app_client_cert_der_path(@app), class: 'button tiny'
 
-		.row
-			.large-6.columns
-				p12 Archive
-			.large-6.columns	
+		- if client_cert
+			.row
+				.large-6.columns
+					Client Key
+				.large-6.columns
 			
-				.right
-					= link_to 'der', admin_app_client_pkcs12_der_path(@app), class: 'button tiny'
+					.right
+						= link_to 'pem', admin_app_client_key_pem_path(@app), class: 'button tiny'
+						= link_to 'der', admin_app_client_key_der_path(@app), class: 'button tiny'
+				
+			.row
+				.large-6.columns
+					Client Cert
+				.large-6.columns
+			
+					.right
+						= link_to 'pem', admin_app_client_cert_pem_path(@app), class: 'button tiny'
+						= link_to 'der', admin_app_client_cert_der_path(@app), class: 'button tiny'
+
+			.row
+				.large-6.columns
+					p12 Archive
+				.large-6.columns	
+			
+					.right
+						= link_to 'der', admin_app_client_pkcs12_der_path(@app), class: 'button tiny'
 
 .row
-	.large-12.columns				
-		.row
-			.large-6.columns
-				CA Cert
-			.large-6.columns
+	.large-12.columns	
+	
+		- if ca_cert
+				
+			.row
+				.large-6.columns
+					CA Cert
+				.large-6.columns
 			
-				.right
-					= link_to 'pem', admin_app_ca_cert_pem_path(@app), class: 'button tiny'
-					= link_to 'der', admin_app_ca_cert_der_path(@app), class: 'button tiny'
+					.right
+						= link_to 'pem', admin_app_ca_cert_pem_path(@app), class: 'button tiny'
+						= link_to 'der', admin_app_ca_cert_der_path(@app), class: 'button tiny'
 
 .row
 	.large-12.columns

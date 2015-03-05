@@ -1,10 +1,18 @@
 .row
 	.large-12.columns
+		%ul.breadcrumbs
+			%li= link_to 'apps', admin_apps_path
+			%li= link_to @app.name, admin_app_path(@app)
+			%li= link_to 'entities', admin_app_end_entities_path(@app)
+			%li.current new
+
+.row
+	.large-12.columns
 		%p Add a New End Entity
 
 		= form_for @end_entity, url: admin_app_end_entities_path(@app) do |f|
 	
-			= render partial: 'form', object: f, locals: {apps: @apps}
+			= render partial: 'form', object: f
 	
 			.row
 				.large-4.columns
@@ -15,4 +23,4 @@
 				.large-4.columns
 					&nbsp;
 
-		= link_to 'Cancel', admin_end_entities_path, {class: 'button small'}
+		= link_to 'Cancel', admin_app_end_entities_path(@app), {class: 'button small'}

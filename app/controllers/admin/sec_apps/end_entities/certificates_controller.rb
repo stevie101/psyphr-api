@@ -31,7 +31,9 @@ class Admin::SecApps::EndEntities::CertificatesController < ApplicationControlle
 
     cert = @end_entity.certificates.find(params[:certificate_id])
 
-    cert.update_attributes( status: 'R', revoked_at: Time.now)
+    cert.revoke
+    
+    @app.generate_crl
 
     redirect_to admin_app_end_entity_url(@app, @end_entity)
   end

@@ -46,6 +46,8 @@ Rails.application.routes.draw do
       post 'revoke_ca_cert'
       get 'generate_crl'
       get 'download_arl'
+      post 'rekey_ca_cert'
+      post 'rekey_client_cert'
       resources :end_entities, controller: 'sec_apps/end_entities' do
         post :enrol
         post 'renew'
