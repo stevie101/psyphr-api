@@ -4,6 +4,10 @@ class ApplicationController < ActionController::Base
   # protect_from_forgery with: :exception
   protect_from_forgery with: :null_session
 
+  def index
+    render text: 'PSYPHR API SERVER' and return
+  end
+
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
     # @current_user = User.first            # Until the user authentication is added

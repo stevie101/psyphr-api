@@ -1,8 +1,8 @@
 # config valid only for current version of Capistrano
 lock '3.3.5'
 
-set :application, 'sec-server'
-set :repo_url, 'git@github.com:stevie101/sec-server.git'
+set :application, 'psyphr-api'
+set :repo_url, 'git@github.com:stevie101/psyphr-api.git'
 set :deploy_to, "/home/user/apps/#{fetch(:application)}/"
 set :deploy_via, :copy
 

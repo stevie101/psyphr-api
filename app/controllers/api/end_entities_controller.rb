@@ -16,7 +16,7 @@ class Api::EndEntitiesController < ApplicationController
         @end_entity.sec_app_id = @app.id
         @end_entity.save
         
-        render json: {uuid: @end_entity.uuid}, status: 200 and return
+        render json: {uuid: @end_entity.uuid, e_password: @end_entity.password}, status: 200 and return
         
       else
       

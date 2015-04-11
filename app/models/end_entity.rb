@@ -2,10 +2,12 @@ require 'uuidtools'
 
 class EndEntity < ActiveRecord::Base
 
+  attr_accessor :password
+
   belongs_to :sec_app
   has_many :certificates, as: :certificatable
   
-  before_create :generate_uuid, :ejbca_password
+  before_create :generate_uuid, :generate_password
   
   def generate_uuid
     self.uuid = UUIDTools::UUID.timestamp_create.to_s
@@ -20,8 +22,9 @@ class EndEntity < ActiveRecord::Base
 
   # Generates an 8 character random number
   # And assigns it to the band's registration code attribute
-  def ejbca_password
-    self.e_password = random_string(8)
+  def generate_password
+    self.password = random_string(32)
+    self.e_password = Digest::SHA256.hexdigest(self.password)
   end
 
 end
