@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   get 'join', to: 'users#new', as: :join
   get 'logout', to: 'sessions#destroy', as: :logout
   get 'help', to: 'help#index', as: :help
+  get 'cp', to: 'help#cp', as: :cp
+  get 'cps', to: 'help#cps', as: :cps
   
   resources :sessions
   resources :users

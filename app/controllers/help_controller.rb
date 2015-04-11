@@ -5,4 +5,12 @@ class HelpController < ApplicationController
   def index
     
   end
+  
+  def cp
+    
+  end
+  
+  def cps
+    
+  end
 end
