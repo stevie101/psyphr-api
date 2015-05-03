@@ -1,5 +1,7 @@
 class Api::EndEntitiesController < ApplicationController
 
+  before_action :doorkeeper_authorize!
+
   def create
         
     # Get app for the given app uuid
@@ -20,15 +22,13 @@ class Api::EndEntitiesController < ApplicationController
         
       else
       
-        render json: {error: true, message: 'Entity already exists'}, status: 200 and return
+        render json: {error: true, message: 'Entity already exists'}, status: 400 and return
       
       end
     
-      render json: {uuid: @end_entity.uuid}, status: 200 and return
-    
     else
       
-      render json: {error: true, message: 'Invalid app uuid'}, status: 200 and return
+      render json: {error: true, message: 'Invalid app uuid'}, status: 403 and return
     
     end
 

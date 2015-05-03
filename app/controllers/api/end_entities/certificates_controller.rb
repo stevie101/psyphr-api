@@ -1,6 +1,7 @@
 require 'base64'
 class Api::EndEntities::CertificatesController < ApplicationController
   
+  before_action :doorkeeper_authorize!
   before_filter :require_app, :require_entity
   
   # DELETE
@@ -33,11 +34,11 @@ class Api::EndEntities::CertificatesController < ApplicationController
       render text: Base64.encode64(pkcs7.to_pem), status: 200 and return
       
       
-      render json: {certificate: @end_entity.cert} and return
+      # render json: {certificate: @end_entity.cert} and return
       
     else
     
-      render json: {error: true, message: 'No valid cert found'} and return
+      render json: {error: true, message: 'No valid cert found'}, status: 404 and return
     
     end
     
@@ -57,7 +58,7 @@ class Api::EndEntities::CertificatesController < ApplicationController
       
     else
     
-      render json: {error: true, message: 'No valid cert found'} and return
+      render json: {error: true, message: 'No valid cert found'}, status: 404 and return
     
     end
 
@@ -69,7 +70,7 @@ class Api::EndEntities::CertificatesController < ApplicationController
     
     unless @end_entity
     
-      render json: {error: true, message: 'Invalid entity'} and return
+      render json: {error: true, message: 'Invalid entity'}, status: 403 and return
     
     end
     
@@ -81,7 +82,7 @@ class Api::EndEntities::CertificatesController < ApplicationController
     
     unless @app
     
-      render json: {error: true, message: 'Invalid app'} and return
+      render json: {error: true, message: 'Invalid app'}, status: 403 and return
     
     end
     
