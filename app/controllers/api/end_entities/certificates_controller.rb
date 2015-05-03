@@ -3,6 +3,12 @@ class Api::EndEntities::CertificatesController < ApplicationController
   
   before_filter :require_app, :require_entity
   
+  # DELETE
+  # Revoke End Entity Certificate matching a valid app UUID, end_entity UUID and certificate serial number
+  def revoke
+    
+  end
+  
   # GET
   # End Entity Certificate matching a valid app UUID and end_entity UUID
   def show

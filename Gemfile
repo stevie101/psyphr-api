@@ -48,8 +48,9 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'foundation-rails'
-gem 'foundation-icons-sass-rails'
+#gem 'foundation-rails'
+#gem 'foundation-icons-sass-rails'
 gem 'thin'
-gem 'haml'
+#gem 'haml'
 gem 'uuidtools'
+gem 'doorkeeper'
